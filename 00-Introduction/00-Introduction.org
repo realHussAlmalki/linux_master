@@ -1,0 +1,45 @@
+#+TITLE: DT's GNU Emacs LINUX MASTAR
+#+AUTHOR: Derek Taylor (DT)
+#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* TABLE OF CONTENTS :toc:
+- [[#intro][Intro]]
+- [[#linux-distributioins][Linux Distributioins]]
+
+* Intro
+=The first question is What is Linux?=
+Linux is an operating system that's extremely popular, especially for servers in data centers, for cloud computers, on microcomputers, for cybersecurity, but also for internet of things. Also, in case you have an Android smartphone, even that is running on Linux.
+- Linux is the kernel of a family of open source Unix like operating system (OS)
+Let's start with operating system.
+- OS:  That's a system software that manages computer hardware and provides various services for computer programs.
+So for example, Windows could be considered an operating system, and it provides a lot of services. It provides network communication there, it provides a new user interface. 
+And then we have the term Unix here.
+Unix: is a powerful, multitasking, multi-user OS that serves as the basis for many modern OS.
+Kernel: means that the kernel is the core part of and OS. It is responsible for managing the hardware, including the CPU, memory, and other devices.
+
+=What is the GNU project?=
+GNU stands for GNU's Not Unix: and The goal : To create a free and open-source operating system
+It was initiated in 1983, and most of that software is released under the GNU General Public License or GPL. This means it's like a very strong open source license so that if I would give you GNU software, I would also be obliged to give you the source code, and you could modify the source code. So there are a lot of things like this in this license.
+The Linux kernel is also released under this license, and GNU provides many of the additional tools and utilities that we want to use.
+Linux provides the kernel GNU.
+
+* Linux Distributioins
+What linux distribution are?
+◽There are various OS built upon GNU/Linux, called Linux distributions (distros).
+◽Each distribution then adds additional, specific software:
+ 🔸This allows to cater to the needs of a specific user group.
+◽Most Linux distributions are free.
+◽️In this course, we will explore 2 popular distributions:
+ 🔹Ubuntu: Part of the Debian family. Designed to be user-friendly.
+ 🔹CentOS Stream: Part of the Red Hat family. It's free to use, and allows us to familiarize ourselves with the Red Hat family.
+◽️We will later have an overview about additional Linux distributions!
+ 
+🔅 Which Linux distribution should you choose?
+🔅 How do you plan to use Linux?
+
+➙ Personal use ➙ Ubuntu.
+➙ Professiona use ➙ What is the scale? How serious is the project?
+▫️Local PC, or small server, without sensitive data ➙ Ubuntu.
+▫️Larger scale / server stores sensitive information. Paying a license fee for production use (RHEL) is OK. ➙ CentOS

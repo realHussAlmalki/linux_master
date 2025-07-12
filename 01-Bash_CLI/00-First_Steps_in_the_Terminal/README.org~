@@ -1,0 +1,316 @@
+#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+AUTHOR: HUSSAIN ALMALKI (HA)
+#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* TABLE OF CONTENTS :toc:
+- [[#first-steps-in-the-terminal][First steps in the Terminal]]
+- [[#a-first-command-in-the-terminal][A first command in the Terminal]]
+  - [[#the-command-echo][The Command echo]]
+  - [[#combining-options][Combining options]]
+- [[#navigating-the-filesystem][Navigating the filesystem]]
+  - [[#the-pwd-command][The pwd command]]
+  - [[#changing-the-directory-cd][Changing the directory: cd]]
+- [[#listing-contents-of-a-folder][Listing contents of a folder]]
+  - [[#listing-the-contents-ls][Listing the contents: ls]]
+- [[#absolute-vs-relative-paths][Absolute vs. relative paths]]
+  - [[#absolute-paths][Absolute paths:]]
+  - [[#relative-paths][Relative paths:]]
+
+* First steps in the Terminal
+Let's confirm that you're using Bash
+- Let's first confirm that you're runing a Bash.
+- We can do this with the following command:
+  - =echo "${BASH_VERSION}"=
+#+begin_src bash
+[dt@archlinux ~]$ echo "${BASH_VERSION}"
+5.2.37(1)-release
+[dt@archlinux ~]$
+#+end_src
+- If it doesn't output anything (or just an empty line):
+  - Be sure to launch Bash with the following command:
+    - =bash=
+  - for now, you will need to do this any time you open a new window/tab in your terminal.
+* A first command in the Terminal
+** The Command echo
+- echo  allows us to output text in the terminal
+- We can test this:
+  - echo 'Bash is amazing!'
+- For new:
+  - The string that we want to print should be wrapped in single quotes
+  - We will learn more about why in the chapter about Expansions
+#+begin_src bash
+[dt@archlinux ~]$ echo 'Bash is amazing!'
+Bash is amazing!
+#+end_src
+
+| echo             | command program |
+| Bash is amazing! | argument(s)     |
+| all command      | Bash command    |
+
+- By defaule:
+  - echo will by default output a line break at the end
+  - We can disable this with the option: -n
+  - *Example*
+    - echo -n 'Bash is amazing!'
+#+begin_src bash
+[dt@archlinux ~]$ echo -n 'Bash is amazing!'
+Bash is amazing![dt@archlinux ~]$
+#+end_src 
+
+| echo             | command program |
+| -n               | option(s)       |
+| Bash is amazing! | argument(s)     |
+| all command      | Bash command    |
+
+- We can also use different options:
+  - The option -e enables backslash escapes
+  - *Example*:
+    - echo -e 'Line 1\nLine 2'
+  - Here, \n will now be converted int a line break
+#+begin_src bash
+[dt@archlinux ~]$ echo -e 'Line 1\nLine 2'
+Line 1
+Line 2
+[dt@archlinux ~]$ echo 'Bash is \nAMAZAING!'
+Bash is \nAMAZAING!
+[dt@archlinux ~]$ echo -e 'Bash is \nAMAZAING!'
+Bash is
+AMAZAING!
+[dt@archlinux ~]$
+#+end_src
+
+** Combining options
+- Quite often, we want to combine multiple options
+- Usually, all of those are equivalent:
+  ~echo -e -n 'Hello\nworld'~
+  ~echo -en 'Hello\nworld'~ or ~echo -ne 'Hello\nWorld'~
+
+* Navigating the filesystem
+** The pwd command
+- In our terminal:
+  - We're always in a directory
+  - This directory is called the ~working directory~
+  - It is the folder that the shell is currently operating at
+  - Commands can access this folder and act relative to this directory
+  - *To find out our current directory*:
+    - pwd
+    - (print working directory)
+
+#+begin_src bash
+[dt@archlinux ~]$ pwd
+/home/dt
+#+end_src
+
+** Changing the directory: cd
+- If we want to change the directory, we can use the cd command
+- cd stands for: "change directory"
+- *Examples*:
+  - cd [direcotry_name]:
+  - Moves into the directory specified by [directory_name]
+  - *Example*:
+    - cd Destkop
+    - cd /
+    - cd ..
+      - Move into the parent directory
+    - cd ~ or cd
+      - Move to the user's home directory
+    - cd ~/Desktop
+      - Move to the user's desktop
+
+#+begin_src bash
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ cd Desktop/
+[dt@archlinux Desktop]$ cd /home/dt/
+[dt@archlinux ~]$ cd /
+[dt@archlinux /]$ cd ~
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ cd Desktop/
+[dt@archlinux Desktop]$ pwd
+/home/dt/Desktop
+[dt@archlinux Desktop]$ cd ..
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$
+#+end_src
+* Listing contents of a folder
+** Listing the contents: ls
+- To list the contents of the current working directory
+  - ~ls~
+#+begin_src bash
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ ls
+ Desktop     nuclei-templates                                          snap
+ Documents   Pictures                                                  Templates
+ Downloads   Postman                                                   Videos
+ go          Public                                                   'VirtualBox VMs'
+ Music       Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+#+end_src
+
+- *We can also add additional options*:
+  - *Syntax*: ls [option...] [path]
+  - ~-a~: List all entries, including hidden files starting with .
+#+begin_src bash
+[dt@archlinux ~]$ ls -a
+ .                 .gtkrc-2.0           Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+ ..                .hplip               .rediscli_history
+ .authinfo         .hushlogin           .rustup
+ .aws              .icons               .screenlayout
+ .bash_history     .java                .shutter
+ .bash_logout      .john                snap
+ .bash_profile     .kube                .ssh
+ .bashrc           .local               .ssr
+ .bundle           .mariadb_history     .subversion
+ .BurpSuite        .miktex              .tableplus
+ .cache            .mozilla             Templates
+ .cargo            .mpd                 .terminfo
+ .config           .mplayer             .texlive
+ Desktop           .msf4                .thunderbird
+ .dmrc             Music                .vagrant.d
+ .docker           .nc_history          Videos
+ Documents         .ncmpcpp             .viminfo
+ .dotnet           .node_repl_history   .vim_mru_files
+ Downloads         .npm                 .vimrc
+ .elfeed           .npmrc               .vim_runtime
+ .emacs.d          nuclei-templates    'VirtualBox VMs'
+ .envrc            .nuget               .vmware
+ .face             .nxc                 .vscode-oss
+ .fehbg            .oh-my-zsh           .weevely
+ .gdb_history      .ophcrackrc          .wget-hsts
+ .gdbinit-gef.py   .ovftool.ssldb       .wpscan
+ .gdbinit.old      .packettracer        .xinitrc
+ .gef-2025.01.py   Pictures             .Xresources
+ .ghidra           .pki                 .zcompdump-archlinux-5.9
+ .gitconfig        Postman              .zcompdump-archlinux-5.9.zwc
+ .gnupg            Public               .zen
+ go                .python_history      .zshrc
+#+end_src
+- ~-r~: Reverse order while sorting
+- ~-t~: Sort by modification time, newest first
+#+begin_src bash
+[dt@archlinux ~]$ ls -t
+ Desktop                                                   nuclei-templates   go
+ Downloads                                                 Postman            Pictures
+ Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf   snap               Public
+ Documents                                                 Videos             Templates
+ Music                                                    'VirtualBox VMs'
+[dt@archlinux ~]$ ls -r
+'VirtualBox VMs'                                           Public             go
+ Videos                                                    Postman            Downloads
+ Templates                                                 Pictures           Documents
+ snap                                                      nuclei-templates   Desktop
+ Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf   Music
+[dt@archlinux ~]$ ls -tr
+ Templates  'VirtualBox VMs'   nuclei-templates                                          Downloads
+ Public      Videos            Music                                                     Desktop
+ Pictures    snap              Documents
+ go          Postman           Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+[dt@archlinux ~]$
+#+end_src
+- --color:
+  - Enables colorful output
+  - ~--color={always,never,auto}~
+#+begin_src bash
+[dt@archlinux ~]$ ls --color=never
+ Desktop     nuclei-templates					       snap
+ Documents   Pictures						       Templates
+ Downloads   Postman						       Videos
+ go	     Public						      'VirtualBox VMs'
+ Music	     Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+[dt@archlinux ~]$ ls -atr --color=never
+ .vimrc			        .nuget
+ .bashrc		        .wpscan
+ .bash_logout		        go
+ .hushlogin		        .rediscli_history
+ .face			       'VirtualBox VMs'
+ .dmrc			        .thunderbird
+ .vim_runtime		        .vagrant.d
+ .screenlayout		        .msf4
+ .oh-my-zsh		        .gdbinit.old
+ .icons			        .gef-2025.01.py
+ ..			        .gdbinit-gef.py
+ Templates		        .mariadb_history
+ .mozilla		        Videos
+ .zcompdump-archlinux-5.9       .elfeed
+ .zcompdump-archlinux-5.9.zwc   .dotnet
+ .rustup		        .bundle
+ .pki			        .aws
+ .mpd			        .nc_history
+ .ncmpcpp		        .john
+ .local			        .node_repl_history
+ .mplayer		        .gdb_history
+ .texlive		        snap
+ Public			        Postman
+ .packettracer		        .gnupg
+ Pictures		        .cache
+ .vscode-oss		        .cargo
+ .tableplus		        .zshrc
+ .java			        .vim_mru_files
+ .bash_profile		        .viminfo
+ .envrc			        nuclei-templates
+ .hplip			        .ssh
+ .Xresources		        .python_history
+ .authinfo		        .zen
+ .terminfo		        Music
+ .npmrc			        .weevely
+ .npm			        .BurpSuite
+ .shutter		        .fehbg
+ .xinitrc		        .emacs.d
+ .miktex		        .gitconfig
+ .ssr			        Documents
+ .ophcrackrc		        .wget-hsts
+ .subversion		        .vmware
+ .gtkrc-2.0		        Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+ .ovftool.ssldb		        .config
+ .ghidra		        Downloads
+ .docker		        Desktop
+ .nxc			        .bash_history
+ .kube			        .
+#+end_src
+- Example:
+  ~ls -ta --color ~/Desktop~
+#+begin_src bash
+[dt@archlinux ~]$ ls -ta --color ~/Pictures/
+..  Screenshots  .  wallpapers
+[dt@archlinux ~]$
+#+end_src
+
+* Absolute vs. relative paths
+** Absolute paths:
+- Start with a "/"
+- They define the complete path to a file
+- Thus, they work everywhere - no matter our current working dirctory
+- *Example*:
+  - ~/home/dt/Desktop~
+  - =~/Desktop=
+#+begin_src bash
+[dt@archlinux ~]$ cd /home/dt/Desktop
+[dt@archlinux Desktop]$ cd ~/Desktop
+[dt@archlinux Desktop]$
+#+end_src
+
+** Relative paths:
+- Are being resolved according to our current working directory
+- *Example*:
+  - ~./Desktop~
+  - ~Desktop~
+  - ~../Desktop~
+#+begin_src bash
+[dt@archlinux Desktop]$ pwd
+/home/dt/Desktop
+[dt@archlinux Desktop]$ cd ../
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ cd Desktop
+[dt@archlinux Desktop]$ cd ../Documents/
+[dt@archlinux Documents]$ pwd
+/home/dt/Documents
+[dt@archlinux Documents]$ cd /home/dt/Desktop
+[dt@archlinux Desktop]$ pwd
+/home/dt/Desktop
+[dt@archlinux Desktop]$
+#+end_src

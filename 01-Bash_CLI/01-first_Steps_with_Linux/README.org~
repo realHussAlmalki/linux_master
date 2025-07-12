@@ -1,0 +1,52 @@
+#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+AUTHOR: HUSSAIN ALMALKI (HA)
+#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* TABLE OF CONTENTS :toc:
+- [[#first-steps-with-linux][First steps with Linux]]
+- [[#user-management][User Management]]
+- [[#elevating-privileges-sudo][Elevating privileges: sudo]]
+
+* First steps with Linux
+- In this chapter:
+  - User management
+  - Elevating privileges with sudo
+  - Package management:
+    - Keeping your system up to date
+    - Installing / removing software
+* User Management
+Basics about user management
+- In Linux, users can be categorized into three general categories:
+  - *System accounts*:
+    - They are responsible for running background tasks on your system ( such as: webserver, database,...)
+    - They don't have a home directory.
+  - *Regular users*:
+    - They have access to their own files and directories.
+    - They cannot perform administrative tasks or access other user's files without permission.
+  - *Superuser* (root): 
+    - The superuser (root) has unrestricted access to the entire system (including files in the home directories of regular users).
+    - Can add/remove uesrs, install software.
+    - Can change the configuration of the system.
+* Elevating privileges: sudo
+- If we want to temporarily elevate our privileges...
+  - We can put a sudo in front of our command.
+  - *Example*:
+    - ~sudo ls /root~
+  - Usually, we could not access this directory.
+  - Only the root user can access it.
+  - But sudo elevates our privileges.
+  - This allows us to access it anyway!
+#+begin_src bash
+[dt@archlinux ~]$ ls /root
+ls: cannot open directory '/root': Permission denied
+[dt@archlinux ~]$ sudo ls /root
+[sudo] password for dt:
+Desktop  nuclei-templates  snap
+#+end_src
+
+NOTE: But be careful: *Always make sure you understand what a command does.* Especially when ~sudo~ is involved.
+- Example:
+  - Important: DO NOT EXECUTE!
+  - ~sudo rm -rf /etc~

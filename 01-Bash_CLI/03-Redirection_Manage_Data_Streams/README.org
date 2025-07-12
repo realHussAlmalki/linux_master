@@ -1,0 +1,16 @@
+#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+AUTHOR: HUSSAIN ALMALKI (HA)
+#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* TABLE OF CONTENTS :toc:
+- [[#bash-cli][Bash CLI]]
+
+* Bash CLI
+- In the next few chapters:
+  - We will have a look how to manage files through the command line
+  - We will see how we can redirect the output of programs into files / use files as input for programs.
+  - We will see how we can use pipes to combine tools.
+  - We will see how the Bash environment works and how this influences the way programs are executed.
+  - And we will configure your prompt to achieve a more beautiful terminal.

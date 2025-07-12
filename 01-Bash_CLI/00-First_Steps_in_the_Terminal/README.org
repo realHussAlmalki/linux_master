@@ -1,0 +1,493 @@
+#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+AUTHOR: HUSSAIN ALMALKI (HA)
+#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* TABLE OF CONTENTS :toc:
+- [[#first-steps-in-the-terminal][First steps in the Terminal]]
+- [[#a-first-command-in-the-terminal][A first command in the Terminal]]
+  - [[#the-command-echo][The Command echo]]
+  - [[#combining-options][Combining options]]
+- [[#navigating-the-filesystem][Navigating the filesystem]]
+  - [[#the-pwd-command][The pwd command]]
+  - [[#changing-the-directory-cd][Changing the directory: cd]]
+- [[#listing-contents-of-a-folder][Listing contents of a folder]]
+  - [[#listing-the-contents-ls][Listing the contents: ls]]
+- [[#absolute-vs-relative-paths][Absolute vs. relative paths]]
+  - [[#absolute-paths][Absolute paths:]]
+  - [[#relative-paths][Relative paths:]]
+- [[#executing-multiple-commands][Executing multiple commands]]
+- [[#how-t-get-help][How t get help?]]
+
+* First steps in the Terminal
+Let's confirm that you're using Bash
+- Let's first confirm that you're runing a Bash.
+- We can do this with the following command:
+  - =echo "${BASH_VERSION}"=
+#+begin_src bash
+[dt@archlinux ~]$ echo "${BASH_VERSION}"
+5.2.37(1)-release
+[dt@archlinux ~]$
+#+end_src
+- If it doesn't output anything (or just an empty line):
+  - Be sure to launch Bash with the following command:
+    - =bash=
+  - for now, you will need to do this any time you open a new window/tab in your terminal.
+* A first command in the Terminal
+** The Command echo
+- echo  allows us to output text in the terminal
+- We can test this:
+  - echo 'Bash is amazing!'
+- For new:
+  - The string that we want to print should be wrapped in single quotes
+  - We will learn more about why in the chapter about Expansions
+#+begin_src bash
+[dt@archlinux ~]$ echo 'Bash is amazing!'
+Bash is amazing!
+#+end_src
+
+| echo             | command program |
+| Bash is amazing! | argument(s)     |
+| all command      | Bash command    |
+
+- By defaule:
+  - echo will by default output a line break at the end
+  - We can disable this with the option: -n
+  - *Example*
+    - echo -n 'Bash is amazing!'
+#+begin_src bash
+[dt@archlinux ~]$ echo -n 'Bash is amazing!'
+Bash is amazing![dt@archlinux ~]$
+#+end_src 
+
+| echo             | command program |
+| -n               | option(s)       |
+| Bash is amazing! | argument(s)     |
+| all command      | Bash command    |
+
+- We can also use different options:
+  - The option -e enables backslash escapes
+  - *Example*:
+    - echo -e 'Line 1\nLine 2'
+  - Here, \n will now be converted int a line break
+#+begin_src bash
+[dt@archlinux ~]$ echo -e 'Line 1\nLine 2'
+Line 1
+Line 2
+[dt@archlinux ~]$ echo 'Bash is \nAMAZAING!'
+Bash is \nAMAZAING!
+[dt@archlinux ~]$ echo -e 'Bash is \nAMAZAING!'
+Bash is
+AMAZAING!
+[dt@archlinux ~]$
+#+end_src
+
+** Combining options
+- Quite often, we want to combine multiple options
+- Usually, all of those are equivalent:
+  ~echo -e -n 'Hello\nworld'~
+  ~echo -en 'Hello\nworld'~ or ~echo -ne 'Hello\nWorld'~
+
+* Navigating the filesystem
+** The pwd command
+- In our terminal:
+  - We're always in a directory
+  - This directory is called the ~working directory~
+  - It is the folder that the shell is currently operating at
+  - Commands can access this folder and act relative to this directory
+  - *To find out our current directory*:
+    - pwd
+    - (print working directory)
+
+#+begin_src bash
+[dt@archlinux ~]$ pwd
+/home/dt
+#+end_src
+
+** Changing the directory: cd
+- If we want to change the directory, we can use the cd command
+- cd stands for: "change directory"
+- *Examples*:
+  - cd [direcotry_name]:
+  - Moves into the directory specified by [directory_name]
+  - *Example*:
+    - cd Destkop
+    - cd /
+    - cd ..
+      - Move into the parent directory
+    - cd ~ or cd
+      - Move to the user's home directory
+    - cd ~/Desktop
+      - Move to the user's desktop
+
+#+begin_src bash
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ cd Desktop/
+[dt@archlinux Desktop]$ cd /home/dt/
+[dt@archlinux ~]$ cd /
+[dt@archlinux /]$ cd ~
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ cd Desktop/
+[dt@archlinux Desktop]$ pwd
+/home/dt/Desktop
+[dt@archlinux Desktop]$ cd ..
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$
+#+end_src
+* Listing contents of a folder
+** Listing the contents: ls
+- To list the contents of the current working directory
+  - ~ls~
+#+begin_src bash
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ ls
+ Desktop     nuclei-templates                                          snap
+ Documents   Pictures                                                  Templates
+ Downloads   Postman                                                   Videos
+ go          Public                                                   'VirtualBox VMs'
+ Music       Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+#+end_src
+
+- *We can also add additional options*:
+  - *Syntax*: ls [option...] [path]
+  - ~-a~: List all entries, including hidden files starting with .
+#+begin_src bash
+[dt@archlinux ~]$ ls -a
+ .                 .gtkrc-2.0           Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+ ..                .hplip               .rediscli_history
+ .authinfo         .hushlogin           .rustup
+ .aws              .icons               .screenlayout
+ .bash_history     .java                .shutter
+ .bash_logout      .john                snap
+ .bash_profile     .kube                .ssh
+ .bashrc           .local               .ssr
+ .bundle           .mariadb_history     .subversion
+ .BurpSuite        .miktex              .tableplus
+ .cache            .mozilla             Templates
+ .cargo            .mpd                 .terminfo
+ .config           .mplayer             .texlive
+ Desktop           .msf4                .thunderbird
+ .dmrc             Music                .vagrant.d
+ .docker           .nc_history          Videos
+ Documents         .ncmpcpp             .viminfo
+ .dotnet           .node_repl_history   .vim_mru_files
+ Downloads         .npm                 .vimrc
+ .elfeed           .npmrc               .vim_runtime
+ .emacs.d          nuclei-templates    'VirtualBox VMs'
+ .envrc            .nuget               .vmware
+ .face             .nxc                 .vscode-oss
+ .fehbg            .oh-my-zsh           .weevely
+ .gdb_history      .ophcrackrc          .wget-hsts
+ .gdbinit-gef.py   .ovftool.ssldb       .wpscan
+ .gdbinit.old      .packettracer        .xinitrc
+ .gef-2025.01.py   Pictures             .Xresources
+ .ghidra           .pki                 .zcompdump-archlinux-5.9
+ .gitconfig        Postman              .zcompdump-archlinux-5.9.zwc
+ .gnupg            Public               .zen
+ go                .python_history      .zshrc
+#+end_src
+- ~-r~: Reverse order while sorting
+- ~-t~: Sort by modification time, newest first
+#+begin_src bash
+[dt@archlinux ~]$ ls -t
+ Desktop                                                   nuclei-templates   go
+ Downloads                                                 Postman            Pictures
+ Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf   snap               Public
+ Documents                                                 Videos             Templates
+ Music                                                    'VirtualBox VMs'
+[dt@archlinux ~]$ ls -r
+'VirtualBox VMs'                                           Public             go
+ Videos                                                    Postman            Downloads
+ Templates                                                 Pictures           Documents
+ snap                                                      nuclei-templates   Desktop
+ Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf   Music
+[dt@archlinux ~]$ ls -tr
+ Templates  'VirtualBox VMs'   nuclei-templates                                          Downloads
+ Public      Videos            Music                                                     Desktop
+ Pictures    snap              Documents
+ go          Postman           Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+[dt@archlinux ~]$
+#+end_src
+- --color:
+  - Enables colorful output
+  - ~--color={always,never,auto}~
+#+begin_src bash
+[dt@archlinux ~]$ ls --color=never
+ Desktop     nuclei-templates					       snap
+ Documents   Pictures						       Templates
+ Downloads   Postman						       Videos
+ go	     Public						      'VirtualBox VMs'
+ Music	     Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+[dt@archlinux ~]$ ls -atr --color=never
+ .vimrc			        .nuget
+ .bashrc		        .wpscan
+ .bash_logout		        go
+ .hushlogin		        .rediscli_history
+ .face			       'VirtualBox VMs'
+ .dmrc			        .thunderbird
+ .vim_runtime		        .vagrant.d
+ .screenlayout		        .msf4
+ .oh-my-zsh		        .gdbinit.old
+ .icons			        .gef-2025.01.py
+ ..			        .gdbinit-gef.py
+ Templates		        .mariadb_history
+ .mozilla		        Videos
+ .zcompdump-archlinux-5.9       .elfeed
+ .zcompdump-archlinux-5.9.zwc   .dotnet
+ .rustup		        .bundle
+ .pki			        .aws
+ .mpd			        .nc_history
+ .ncmpcpp		        .john
+ .local			        .node_repl_history
+ .mplayer		        .gdb_history
+ .texlive		        snap
+ Public			        Postman
+ .packettracer		        .gnupg
+ Pictures		        .cache
+ .vscode-oss		        .cargo
+ .tableplus		        .zshrc
+ .java			        .vim_mru_files
+ .bash_profile		        .viminfo
+ .envrc			        nuclei-templates
+ .hplip			        .ssh
+ .Xresources		        .python_history
+ .authinfo		        .zen
+ .terminfo		        Music
+ .npmrc			        .weevely
+ .npm			        .BurpSuite
+ .shutter		        .fehbg
+ .xinitrc		        .emacs.d
+ .miktex		        .gitconfig
+ .ssr			        Documents
+ .ophcrackrc		        .wget-hsts
+ .subversion		        .vmware
+ .gtkrc-2.0		        Real_World_Bug_Hunting_A_Field_Guide_to_Web_Hacking.pdf
+ .ovftool.ssldb		        .config
+ .ghidra		        Downloads
+ .docker		        Desktop
+ .nxc			        .bash_history
+ .kube			        .
+#+end_src
+- Example:
+  ~ls -ta --color ~/Desktop~
+#+begin_src bash
+[dt@archlinux ~]$ ls -ta --color ~/Pictures/
+..  Screenshots  .  wallpapers
+[dt@archlinux ~]$
+#+end_src
+
+* Absolute vs. relative paths
+** Absolute paths:
+- Start with a "/"
+- They define the complete path to a file
+- Thus, they work everywhere - no matter our current working dirctory
+- *Example*:
+  - ~/home/dt/Desktop~
+  - =~/Desktop=
+#+begin_src bash
+[dt@archlinux ~]$ cd /home/dt/Desktop
+[dt@archlinux Desktop]$ cd ~/Desktop
+[dt@archlinux Desktop]$
+#+end_src
+
+** Relative paths:
+- Are being resolved according to our current working directory
+- *Example*:
+  - ~./Desktop~
+  - ~Desktop~
+  - ~../Desktop~
+#+begin_src bash
+[dt@archlinux Desktop]$ pwd
+/home/dt/Desktop
+[dt@archlinux Desktop]$ cd ../
+[dt@archlinux ~]$ pwd
+/home/dt
+[dt@archlinux ~]$ cd Desktop
+[dt@archlinux Desktop]$ cd ../Documents/
+[dt@archlinux Documents]$ pwd
+/home/dt/Documents
+[dt@archlinux Documents]$ cd /home/dt/Desktop
+[dt@archlinux Desktop]$ pwd
+/home/dt/Desktop
+[dt@archlinux Desktop]$
+#+end_src
+* Executing multiple commands
+- We can also execute multiple commands
+- *For this, we can just add a semicolon between them:*
+  - ~command1; command2;~
+  - *For example*
+    - ~echo -n 'Hello '; echo 'World'~
+#+begin_src bash
+[dt@archlinux ~]$ echo -n 'Hello '; echo 'World'
+Hello World
+[dt@archlinux ~]$ cd ..; cd dt; cd Desktop; ls
+AD                                                      C++
+ad_setup                                                C_Programing
+API                                                     from-scratch-hexdump-in-C
+AsmBasic                                                HTB
+Bash_Programing                                         javaScript
+brave-agimnkijcaahngcdmfeangaknmldooml-Default.desktop  LaTex
+brave-akolldjpfbcppghlplphcighpopofjkn-Default.desktop  My_Project_py
+brave-gkkdnniiiopjakgangolahdbgdigmcil-Default.desktop  Security
+brave-lodlkdfmihgonocnmddehnfgiljnadcf-Default.desktop  webdevpro
+[dt@archlinux Desktop]$
+#+end_src
+
+* How t get help?
+- --help / -h:
+  - For a lot of commands, we can just add a -h or a --help:
+  - ls --hlep
+  - We will then be shown a list of possible options and arguments
+- *man*:
+  - If this doesn't work, we can check the built-in manuals
+  - man ls
+  - Important:
+    - man pages (documentation) must be installed on your system.
+- Otherwise:
+  - Many tools have extensive online documentation
+  - Communities such as stak overflow, or reddit's Linux communities can also be great for help
+
+#+begin_src bash
+[dt@archlinux ~]$ ls --help
+Usage: ls [OPTION]... [FILE]...
+List information about the FILEs (the current directory by default).
+Sort entries alphabetically if none of -cftuvSUX nor --sort is specified.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -a, --all                  do not ignore entries starting with .
+  -A, --almost-all           do not list implied . and ..
+      --author               with -l, print the author of each file
+  -b, --escape               print C-style escapes for nongraphic characters
+      --block-size=SIZE      with -l, scale sizes by SIZE when printing them;
+                             e.g., '--block-size=M'; see SIZE format below
+
+  -B, --ignore-backups       do not list implied entries ending with ~
+  -c                         with -lt: sort by, and show, ctime (time of last
+                             change of file status information);
+                             with -l: show ctime and sort by name;
+                             otherwise: sort by ctime, newest first
+
+  -C                         list entries by columns
+      --color[=WHEN]         color the output WHEN; more info below
+  -d, --directory            list directories themselves, not their contents
+  -D, --dired                generate output designed for Emacs' dired mode
+  -f                         same as -a -U
+  -F, --classify[=WHEN]      append indicator (one of */=>@|) to entries WHEN
+      --file-type            likewise, except do not append '*'
+      --format=WORD          across,horizontal (-x), commas (-m), long (-l),
+                             single-column (-1), verbose (-l), vertical (-C)
+
+      --full-time            like -l --time-style=full-iso
+  -g                         like -l, but do not list owner
+      --group-directories-first
+                             group directories before files
+  -G, --no-group             in a long listing, don't print group names
+  -h, --human-readable       with -l and -s, print sizes like 1K 234M 2G etc.
+      --si                   likewise, but use powers of 1000 not 1024
+  -H, --dereference-command-line
+                             follow symbolic links listed on the command line
+      --dereference-command-line-symlink-to-dir
+                             follow each command line symbolic link
+                             that points to a directory
+
+      --hide=PATTERN         do not list implied entries matching shell PATTERN
+                             (overridden by -a or -A)
+
+      --hyperlink[=WHEN]     hyperlink file names WHEN
+      --indicator-style=WORD
+                             append indicator with style WORD to entry names:
+                             none (default), slash (-p),
+                             file-type (--file-type), classify (-F)
+
+  -i, --inode                print the index number of each file
+  -I, --ignore=PATTERN       do not list implied entries matching shell PATTERN
+  -k, --kibibytes            default to 1024-byte blocks for file system usage;
+                             used only with -s and per directory totals
+
+  -l                         use a long listing format
+  -L, --dereference          when showing file information for a symbolic
+                             link, show information for the file the link
+                             references rather than for the link itself
+
+  -m                         fill width with a comma separated list of entries
+  -n, --numeric-uid-gid      like -l, but list numeric user and group IDs
+  -N, --literal              print entry names without quoting
+  -o                         like -l, but do not list group information
+  -p, --indicator-style=slash
+                             append / indicator to directories
+  -q, --hide-control-chars   print ? instead of nongraphic characters
+      --show-control-chars   show nongraphic characters as-is (the default,
+                             unless program is 'ls' and output is a terminal)
+
+  -Q, --quote-name           enclose entry names in double quotes
+      --quoting-style=WORD   use quoting style WORD for entry names:
+                             literal, locale, shell, shell-always,
+                             shell-escape, shell-escape-always, c, escape
+                             (overrides QUOTING_STYLE environment variable)
+
+  -r, --reverse              reverse order while sorting
+  -R, --recursive            list subdirectories recursively
+  -s, --size                 print the allocated size of each file, in blocks
+  -S                         sort by file size, largest first
+      --sort=WORD            change default 'name' sort to WORD:
+                               none (-U), size (-S), time (-t),
+                               version (-v), extension (-X), name, width
+
+      --time=WORD            select which timestamp used to display or sort;
+                               access time (-u): atime, access, use;
+                               metadata change time (-c): ctime, status;
+                               modified time (default): mtime, modification;
+                               birth time: birth, creation;
+                             with -l, WORD determines which time to show;
+                             with --sort=time, sort by WORD (newest first)
+
+      --time-style=TIME_STYLE
+                             time/date format with -l; see TIME_STYLE below
+  -t                         sort by time, newest first; see --time
+  -T, --tabsize=COLS         assume tab stops at each COLS instead of 8
+  -u                         with -lt: sort by, and show, access time;
+                             with -l: show access time and sort by name;
+                             otherwise: sort by access time, newest first
+
+  -U                         do not sort directory entries
+  -v                         natural sort of (version) numbers within text
+  -w, --width=COLS           set output width to COLS.  0 means no limit
+  -x                         list entries by lines instead of by columns
+  -X                         sort alphabetically by entry extension
+  -Z, --context              print any security context of each file
+      --zero                 end each output line with NUL, not newline
+  -1                         list one file per line
+      --help        display this help and exit
+      --version     output version information and exit
+
+The SIZE argument is an integer and optional unit (example: 10K is 10*1024).
+Units are K,M,G,T,P,E,Z,Y,R,Q (powers of 1024) or KB,MB,... (powers of 1000).
+Binary prefixes can be used, too: KiB=K, MiB=M, and so on.
+
+The TIME_STYLE argument can be full-iso, long-iso, iso, locale, or +FORMAT.
+FORMAT is interpreted like in date(1).  If FORMAT is FORMAT1<newline>FORMAT2,
+then FORMAT1 applies to non-recent files and FORMAT2 to recent files.
+TIME_STYLE prefixed with 'posix-' takes effect only outside the POSIX locale.
+Also the TIME_STYLE environment variable sets the default style to use.
+
+The WHEN argument defaults to 'always' and can also be 'auto' or 'never'.
+
+Using color to distinguish file types is disabled both by default and
+with --color=never.  With --color=auto, ls emits color codes only when
+standard output is connected to a terminal.  The LS_COLORS environment
+variable can change the settings.  Use the dircolors(1) command to set it.
+
+Exit status:
+ 0  if OK,
+ 1  if minor problems (e.g., cannot access subdirectory),
+ 2  if serious trouble (e.g., cannot access command-line argument).
+
+GNU coreutils online help: <https://www.gnu.org/software/coreutils/>
+Full documentation <https://www.gnu.org/software/coreutils/ls>
+or available locally via: info '(coreutils) ls invocation'
+#+end_src
