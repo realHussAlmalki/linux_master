@@ -1,6 +1,6 @@
-#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+TITLE: HA's GNU Emacs LINUX MASTER
 #+AUTHOR: HUSSAIN ALMALKI (HA)
-#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+DESCRIPTION: DT's personal Emacs Linux Master.
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
@@ -20,6 +20,8 @@
 - [[#filename-expansion-globbing][Filename expansion (globbing)]]
   - [[#filename-expansion][Filename expansion]]
   - [[#important][IMPORTANT:]]
+- [[#additional-wildcards-for-globbin][Additional wildcards for globbin]]
+  - [[#additional-ways-to-use-globbing][Additional ways to use globbing]]
 
 * File Management in BASH
 ** IN THIS CHAPTER
@@ -290,3 +292,30 @@ IMG_2004.jpg IMG_6423.jpg IMG_6662.jpg IMG_6677.MOV IMG_6677.SRT images
 ** IMPORTANT:
 - The wildcard characters must not be quoted (so neither in 'single quotes' nor "double quotes").
 - Globbing does not use regular expressions.
+
+* Additional wildcards for globbin
+** Additional ways to use globbing
+|-------+-------------------------------------------------------------------------------|
+| ?     | matches any single character                                                  |
+| [0-9] | The square brackets allow us to specify a character range (here: all numbers) |
+| **    | matches zero up to arbitrarily many characters (indluding /)                  |
+
+#+begin_src bash
+root@5aaa26cbdddf:~# ls
+IMG_6677.MOV  IMG_6677.SRT  images
+root@5aaa26cbdddf:~# echo IMG?6677.*
+IMG_6677.MOV IMG_6677.SRT
+root@5aaa26cbdddf:~# mv IMG_6677.SRT IMGa6677.SRT
+root@5aaa26cbdddf:~# ls
+IMG_6677.MOV  IMGa6677.SRT  images
+root@5aaa26cbdddf:~# echo IMG?6677.*
+IMG_6677.MOV IMGa6677.SRT
+root@5aaa26cbdddf:~# ls images/
+IMG_2004.jpg  IMG_6243.jpg  IMG_6662.jpg
+root@5aaa26cbdddf:~# echo ./images/IMG_6[0-9][0-9][0-9].[a-z][a-z][a-z]
+./images/IMG_6243.jpg ./images/IMG_6662.jpg
+root@5aaa26cbdddf:~# echo ./images/IMG_6*
+./images/IMG_6243.jpg ./images/IMG_6662.jpg
+root@5aaa26cbdddf:~# echo **/*.jpg
+images/IMG_2004.jpg images/IMG_6243.jpg images/IMG_6662.jpg
+#+end_src

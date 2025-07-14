@@ -1,4 +1,4 @@
-#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+TITLE: HA's GNU Emacs LINUX MASTER
 #+AUTHOR: HUSSAIN ALMALKI (HA)
 #+DESCRIPTION: DT's personal Emacs Linux Mastar.
 #+STARTUP: showeverything
