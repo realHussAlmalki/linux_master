@@ -22,6 +22,17 @@
   - [[#important][IMPORTANT:]]
 - [[#additional-wildcards-for-globbin][Additional wildcards for globbin]]
   - [[#additional-ways-to-use-globbing][Additional ways to use globbing]]
+- [[#exercise-extracting-files][Exercise: Extracting Files]]
+- [[#bonus-the-find-program][Bonus: The find program]]
+- [[#how-to-read-files][How to read files]]
+  - [[#cat][cat]]
+  - [[#head][head]]
+  - [[#tail][tail]]
+  - [[#less][less]]
+- [[#how-to-get-the-size-of-a-file][How to get the size of a file]]
+  - [[#wc-word-count][wc (word count):]]
+  - [[#du-disk-usage][du (disk usage):]]
+- [[#how-to-edit-files][How to edit files]]
 
 * File Management in BASH
 ** IN THIS CHAPTER
@@ -319,3 +330,329 @@ root@5aaa26cbdddf:~# echo ./images/IMG_6*
 root@5aaa26cbdddf:~# echo **/*.jpg
 images/IMG_2004.jpg images/IMG_6243.jpg images/IMG_6662.jpg
 #+end_src
+
+* Exercise: Extracting Files
+- Imagine we're running a company
+- And we need to urgently provide documents for a court hearing
+- For our exercise:
+  - We need to provide all Excel and PDF file for January and February
+  - How do we do this?
+  - Can yo use globbign for this?
+
+#+begin_src bash
+~/Templates ❯ lt
+.
+├── Purchasing
+│   ├── '01 - January'
+│   │   ├── 'Balance Sheet.xlsx'
+│   │   └── Invoice.pdf
+│   ├── '02 - February'
+│   │   ├── additional-table.xlsx
+│   │   ├── important-business-figures.xlsx
+│   │   ├── important-invoice.pdf
+│   │   └── not-important.mp4
+│   ├── '03 - March'
+│   │   └── numbers-from-march.xlsx
+│   └── .DS_Store
+└── Sales
+    ├── '01 - January'
+    │   └── Sales-January.xlsx
+    ├── '02 - February'
+    │   └── Balance-Sheet-February.pdf
+    ├── '03 - March'
+    │   ├── Additional-Invoice-March.pdf
+    │   └── Sales-March.xlsx
+    └── .DS_Store
+#+end_src
+
+#+begin_src bash 
+~/Templates ❯ echo */0[1-2]*/*.xlsx
+Purchasing/01 - January/Balance Sheet.xlsx Purchasing/02 - February/additional-table.xlsx Purchasing/02 - February/important-business-figures.xlsx Sales/01 - January/Sales-January.xlsx
+#+end_src
+
+#+begin_src bash
+~/Templates ❯ mkdir Export
+
+~/Templates ❯ lt
+.
+├── Export
+├── Purchasing
+│   ├── '01 - January'
+│   │   ├── 'Balance Sheet.xlsx'
+│   │   └── Invoice.pdf
+│   ├── '02 - February'
+│   │   ├── additional-table.xlsx
+│   │   ├── important-business-figures.xlsx
+│   │   ├── important-invoice.pdf
+│   │   └── not-important.mp4
+│   ├── '03 - March'
+│   │   └── numbers-from-march.xlsx
+│   └── .DS_Store
+└── Sales
+    ├── '01 - January'
+    │   └── Sales-January.xlsx
+    ├── '02 - February'
+    │   └── Balance-Sheet-February.pdf
+    ├── '03 - March'
+    │   ├── Additional-Invoice-March.pdf
+    │   └── Sales-March.xlsx
+    └── .DS_Store
+#+end_src
+
+#+begin_src bash 
+~/Templates ❯ cp */0[1-2]*/*.xlsx Export
+~/Templates ❯ lt
+.
+├── Export
+│   ├── additional-table.xlsx
+│   ├── 'Balance Sheet.xlsx'
+│   ├── important-business-figures.xlsx
+│   └── Sales-January.xlsx
+├── Purchasing
+│   ├── '01 - January'
+│   │   ├── 'Balance Sheet.xlsx'
+│   │   └── Invoice.pdf
+│   ├── '02 - February'
+│   │   ├── additional-table.xlsx
+│   │   ├── important-business-figures.xlsx
+│   │   ├── important-invoice.pdf
+│   │   └── not-important.mp4
+│   ├── '03 - March'
+│   │   └── numbers-from-march.xlsx
+│   └── .DS_Store
+└── Sales
+    ├── '01 - January'
+    │   └── Sales-January.xlsx
+    ├── '02 - February'
+    │   └── Balance-Sheet-February.pdf
+    ├── '03 - March'
+    │   ├── Additional-Invoice-March.pdf
+    │   └── Sales-March.xlsx
+    └── .DS_Store
+#+end_src
+
+#+begin_src bash
+~/Templates ❯ cp */0[1-2]*/*.xlsx */0[1-2]*/*.pdf Export
+~/Templates ❯ lt
+.
+├── Export
+│   ├── additional-table.xlsx
+│   ├── Balance-Sheet-February.pdf
+│   ├── 'Balance Sheet.xlsx'
+│   ├── important-business-figures.xlsx
+│   ├── important-invoice.pdf
+│   ├── Invoice.pdf
+│   └── Sales-January.xlsx
+├── Purchasing
+│   ├── '01 - January'
+│   │   ├── 'Balance Sheet.xlsx'
+│   │   └── Invoice.pdf
+│   ├── '02 - February'
+│   │   ├── additional-table.xlsx
+│   │   ├── important-business-figures.xlsx
+│   │   ├── important-invoice.pdf
+│   │   └── not-important.mp4
+│   ├── '03 - March'
+│   │   └── numbers-from-march.xlsx
+│   └── .DS_Store
+└── Sales
+    ├── '01 - January'
+    │   └── Sales-January.xlsx
+    ├── '02 - February'
+    │   └── Balance-Sheet-February.pdf
+    ├── '03 - March'
+    │   ├── Additional-Invoice-March.pdf
+    │   └── Sales-March.xlsx
+    └── .DS_Store
+#+end_src
+
+#+begin_src bash
+~/Templates ❯ cp */0[1-2]*/*.{pdf,xlsx} Export/
+#+end_src
+
+* Bonus: The find program
+- Instead of searching by name we can use the find program for a more spohisticated search
+- *find*
+  - We should provide a path as a first parameter
+    (e.g. *.* for current working directory)
+
+#+begin_src bash
+[dt@archlinux Templates]$ find .
+.
+./Purchasing
+./Purchasing/01 - January
+./Purchasing/01 - January/Invoice.pdf
+./Purchasing/01 - January/Balance Sheet.xlsx
+./Purchasing/.DS_Store
+./Purchasing/02 - February
+./Purchasing/02 - February/not-important.mp4
+./Purchasing/02 - February/important-invoice.pdf
+./Purchasing/02 - February/important-business-figures.xlsx
+./Purchasing/02 - February/additional-table.xlsx
+./Purchasing/03 - March
+./Purchasing/03 - March/numbers-from-march.xlsx
+./Sales
+./Sales/01 - January
+./Sales/01 - January/Sales-January.xlsx
+./Sales/.DS_Store
+./Sales/02 - February
+./Sales/02 - February/Balance-Sheet-February.pdf
+./Sales/03 - March
+./Sales/03 - March/Sales-March.xlsx
+./Sales/03 - March/Additional-Invoice-March.pdf
+./Export
+./Export/Balance-Sheet-February.pdf
+./Export/Invoice.pdf
+./Export/Sales-January.xlsx
+./Export/important-invoice.pdf
+./Export/important-business-figures.xlsx
+./Export/Balance Sheet.xlsx
+./Export/additional-table.xlsx
+#+end_src
+
+- Examples:
+  - if we want to limit the file type:
+    - Only files: find . -type f
+    - Only directories find . -type d
+#+begin_src bash
+[dt@archlinux Templates]$ find . -type d
+.
+./Purchasing
+./Purchasing/01 - January
+./Purchasing/02 - February
+./Purchasing/03 - March
+./Sales
+./Sales/01 - January
+./Sales/02 - February
+./Sales/03 - March
+./Export
+#+end_src
+
+#+begin_src bash
+[dt@archlinux Templates]$ find . -type f
+./Purchasing/01 - January/Invoice.pdf
+./Purchasing/01 - January/Balance Sheet.xlsx
+./Purchasing/.DS_Store
+./Purchasing/02 - February/not-important.mp4
+./Purchasing/02 - February/important-invoice.pdf
+./Purchasing/02 - February/important-business-figures.xlsx
+./Purchasing/02 - February/additional-table.xlsx
+./Purchasing/03 - March/numbers-from-march.xlsx
+./Sales/01 - January/Sales-January.xlsx
+./Sales/.DS_Store
+./Sales/02 - February/Balance-Sheet-February.pdf
+./Sales/03 - March/Sales-March.xlsx
+./Sales/03 - March/Additional-Invoice-March.pdf
+./Export/Balance-Sheet-February.pdf
+./Export/Invoice.pdf
+./Export/Sales-January.xlsx
+./Export/important-invoice.pdf
+./Export/important-business-figures.xlsx
+./Export/Balance Sheet.xlsx
+./Export/additional-table.xlsx
+#+end_src
+
+- Find all files have been modified within the last 7 days:
+  - find . -type f -mtime -7
+  - mtime: modification timestamp
+- Find all files that are large then 10MB
+  - find . -type f -size +10M
+- Delete all empty files in a directory:
+  - find . -empty -delete
+
+* How to read files
+** cat
+The command cat allows to print the contents of a file
+- ~cat data.txt~
+#+begin_src bash
+root@5aaa26cbdddf:~# ls
+Purchasing  bash.txt  romeo.txt  sales
+root@5aaa26cbdddf:~# cat bash.txt
+Bash is cool!
+
+I want to learn more about the shell!
+root@5aaa26cbdddf:~# cat b*
+Bash is cool!
+
+I want to learn more about the shell!
+#+end_src
+
+** head
+The command shows us the start of a (text) file. We can specify the Paramter ~-n~ for the number of lines.
+- ~head -n 5 data.txt~
+#+begin_src bash
+root@5aaa26cbdddf:~# cat romeo.txt | head -n 5
+Romeo and Juliet
+by William Shakespeare
+Edited by Barbara A. Mowat and Paul Werstine
+  with Michael Poston and Rebecca Niles
+Folger Shakespeare Library
+root@5aaa26cbdddf:~# head -n 5 romeo.txt
+Romeo and Juliet
+by William Shakespeare
+Edited by Barbara A. Mowat and Paul Werstine
+  with Michael Poston and Rebecca Niles
+Folger Shakespeare Library
+#+end_src
+** tail
+Then command read a file from the end, some options as head
+- ~tail -n 5 data.txt~
+#+begin_src bash
+root@5aaa26cbdddf:~# cat romeo.txt | tail -n 5
+Go hence to have more talk of these sad things.
+Some shall be pardoned, and some punished.
+For never was a story of more woe
+Than this of Juliet and her Romeo.
+[All exit.]
+root@5aaa26cbdddf:~# tail -n 5 romeo.txt
+Go hence to have more talk of these sad things.
+Some shall be pardoned, and some punished.
+For never was a story of more woe
+Than this of Juliet and her Romeo.
+[All exit.]
+#+end_src
+** less
+Allows us to read large files, we can use the arrow keys to navigate through the file. Or we can use ~f~ ~(forward)~ and ~(backward)~ to navigate a whole page ahead or back.
+We can also navigate to a percentage of our content. We just enter ~50p~ to navigate to 50% of our content. We can use the ~=~ to show info about our current position. We can also use the option ~-N~ to display row numbers.
+*** find in tile
+- Forward search: ~/Search Term~
+- Backwards search: ~?Search Term~
+***  to quit: q
+
+* How to get the size of a file
+If we just cat a large file... the whole file will be printed in the terminal. This may take quite long... can't we check the size of a file ahead of time?
+** wc (word count):
+- ~wc file.txt~
+- ~wc -lwc file.txt~
+Prints out the number of lines, the number of word, and the number of bytes in the files.
+#+begin_src bash
+root@5aaa26cbdddf:~# wc -lwc romeo.txt
+  5011  25913 146706 romeo.txt
+root@5aaa26cbdddf:~#
+#+end_src
+- ~wc -l file.txt~ counts the nuber of lines
+- ~wc -w file.txt~ counts the number of words
+- ~wc -c file.txt~ counts the number of bytes (=8 bit ASCII-characters)
+** du (disk usage):
+It will calculate the size of all times in this folder. We can also specify the paramter ~"-s"~, to just get a summary.
+#+begin_src bash
+root@5aaa26cbdddf:~# du
+4	./sales
+4	./Purchasing
+4	./.local/share/nano
+8	./.local/share
+12	./.local
+188	.
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# du romeo.txt
+144	romeo.txt
+root@5aaa26cbdddf:~# du -h romeo.txt
+144K	romeo.txt
+#+end_src
+
+* How to edit files
+There's no build-in text editero for bash. We have to install additiona software for that.
+- pico / nano: A simple editor for text file in bash
+- vi / vim: A more advanced text editor
