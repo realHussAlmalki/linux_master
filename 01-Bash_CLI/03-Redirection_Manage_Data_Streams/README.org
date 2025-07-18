@@ -1,16 +1,122 @@
-#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+TITLE: HA's Redirection Manage Data Streams
 #+AUTHOR: HUSSAIN ALMALKI (HA)
-#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+DESCRIPTION: Redirection Manage Data Sterams.
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
 * TABLE OF CONTENTS :toc:
-- [[#bash-cli][Bash CLI]]
+- [[#overview-strams][Overview: Strams]]
+  - [[#in-this-chapter][In this chapter:]]
+- [[#how-to-write-output-to-a-file][How to write output to a file]]
+- [[#standard-streams-stdin-stdout-stderr][Standard streams: stdin, stdout, stderr]]
+  - [[#so-what-does--or--do][So what does ">" or ">>" do?]]
+- [[#how-to-handle-errors-redirect-stderr][How to handle errors: Redirect stderr]]
 
-* Bash CLI
-- In the next few chapters:
-  - We will have a look how to manage files through the command line
-  - We will see how we can redirect the output of programs into files / use files as input for programs.
-  - We will see how we can use pipes to combine tools.
-  - We will see how the Bash environment works and how this influences the way programs are executed.
-  - And we will configure your prompt to achieve a more beautiful terminal.
+* Overview: Strams
+** In this chapter:
+*** You will learn how you can redirect the output the output of a prgoram into a file
+*** You will learn how you can use a file as the input for another program
+*** You will learn how you can handle errors and redirect them
+** COMMENT This is important
+*** It helps us to understand general Unix concepts (though later in this ocurse we'll go into even more detalis)
+*** It enables us to build more complex commands in Bash
+*** It allows you to confidently interact with the terminal
+*** And of course, it allows you to save the output of a command to a file
+
+* How to write output to a file
+Let's say we have acommmand that outputs something. How do we get this output into a file? How can we redirect this output into a file? We can do this with the operator ~>~ For example:
+- ~echo 'Bash is amazing' > file.txt~
+- If the file doesn't exist, it will be created
+- Otherwise, the file will be overwritten!
+#+begin_src bash
+[dt@archlinux linux_master]$ echo 'Bash is amazing'
+Bash is amazing
+[dt@archlinux linux_master]$ echo 'Hello Bash!'
+Hello Bash!
+[dt@archlinux linux_master]$ echo 'Hello Bash!' > output.txt
+[dt@archlinux linux_master]$ cat output.txt
+Hello Bash!
+[dt@archlinux linux_master]$ ls > output.txt
+[dt@archlinux linux_master]$ cat output.txt
+00-Introduction
+01-Bash_CLI
+output.txt
+#+end_src
+
+*To append to a file*, we can use ~>>~ instead of ~>~
+- ~echo 'Bash is amazing' >> file.txt~
+#+begin_src bash
+[dt@archlinux linux_master]$ cat output.txt
+00-Introduction
+01-Bash_CLI
+output.txt
+[dt@archlinux linux_master]$ echo '_________' >> output.txt
+[dt@archlinux linux_master]$ cat output.txt
+00-Introduction
+01-Bash_CLI
+output.txt
+_________
+[dt@archlinux linux_master]$ du -h file.txt
+4.0K	file.txt
+[dt@archlinux linux_master]$ du -h file.txt >> output.txt
+[dt@archlinux linux_master]$ cat output.txt
+00-Introduction
+01-Bash_CLI
+output.txt
+_________
+4.0K	file.txt
+#+end_src
+
+* Standard streams: stdin, stdout, stderr
+By default, there are 3 communication channels for data:
+- 0: standard input (form the keyboard); *stdin*
+- 1: standard output (on the screen); *stdout*
+** So what does ">" or ">>" do?
+By using ~>~ or ~>>~, wc can redirect the stdout to a file. Thus, the stdout is no longer being sent to the terminal, but to a file.
+#+begin_src bash
+[dt@archlinux linux_master]$ du -h file.txt
+4.0K	file.txt
+[dt@archlinux linux_master]$ du -h file.txt > du.txt
+[dt@archlinux linux_master]$ cat du.txt
+4.0K	file.txt
+[dt@archlinux linux_master]$ du -h file.txt file1.txt
+4.0K	file.txt
+du: cannot access 'file1.txt': No such file or directory
+[dt@archlinux linux_master]$ echo $?
+1
+[dt@archlinux linux_master]$ du -h file.txt file1.txt > du.txt
+du: cannot access 'file1.txt': No such file or directory
+[dt@archlinux linux_master]$ cat du.txt
+4.0K	file.txt
+#+end_src
+* How to handle errors: Redirect stderr
+Sometimes, we want to redirect the stderr.
+*** Why?
+- A program may print errors, and we want to ignore them.
+- We are only interested in the errors and want to redirect ehem into a file (to have a look at them at a later date).
+*** How do we do that?
+So far, we have only redirected stdout (1):
+- ~du -h file.txt > output.txt~
+- However, there's also a more verbose way to do this:
+  - ~du -h file.txt 1> output.txt~
+We can use thsi way to also redirect stderr (2):
+- ~du -h file.txt 2> error.txt~
+- We can also combine those:
+  - ~du -h file.txt > output.txt 2> error.txt~
+#+begin_src bash
+[dt@archlinux linux_master]$ du -h file.txt
+4.0K	file.txt
+[dt@archlinux linux_master]$ du -h file.txt > output.txt
+[dt@archlinux linux_master]$ cat output.txt
+4.0K	file.txt
+[dt@archlinux linux_master]$ du -h file.txt 1> output.txt
+[dt@archlinux linux_master]$ cat output.txt
+4.0K	file.txt
+[dt@archlinux linux_master]$ du -h file.txt file_2.txt 2> error.txt
+4.0K	file.txt
+[dt@archlinux linux_master]$ cat file.txt
+Hello Bash!
+[dt@archlinux linux_master]$ cat error.txt
+du: cannot access 'file_2.txt': No such file or directory
+[dt@archlinux linux_master]$  du -h text.txt 2>/dev/null
+#+end_src
