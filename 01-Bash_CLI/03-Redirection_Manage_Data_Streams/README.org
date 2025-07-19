@@ -11,6 +11,10 @@
 - [[#standard-streams-stdin-stdout-stderr][Standard streams: stdin, stdout, stderr]]
   - [[#so-what-does--or--do][So what does ">" or ">>" do?]]
 - [[#how-to-handle-errors-redirect-stderr][How to handle errors: Redirect stderr]]
+- [[#redirect-stderr-to-stdout][Redirect stderr to stdout]]
+  - [[#can-we-redirect-stderr-to-stdout][Can we redirect stderr to stdout?]]
+  - [[#can-we-redirect-stderr-to-stdout-1][Can we redirect stderr to stdout?]]
+  - [[#what-about-stdin][What about stdin?]]
 
 * Overview: Strams
 ** In this chapter:
@@ -119,4 +123,72 @@ Hello Bash!
 [dt@archlinux linux_master]$ cat error.txt
 du: cannot access 'file_2.txt': No such file or directory
 [dt@archlinux linux_master]$  du -h text.txt 2>/dev/null
+#+end_src
+
+* Redirect stderr to stdout
+** Can we redirect stderr to stdout?
+- First: Why do we want to redirect stderr to stdout
+  - It allows us to easily store both outputs in the same file
+  - Right now we sould have to provide th filename multiple times:
+    ~du -h IMG_9328.jpg IMG_1234.jpg 1>> out.txt 2>> out.txt~
+- And later, when we learn how to chain commands together (with pipes):
+  - We can only pipe stdout into the next command
+- How can we redirect stderr to stdout?
+  - &1 stands for: current stdout
+    ~[command] 2>&1~
+    ~[command] > out.txt 2>&1~
+#+begin_src bash
+root@5aaa26cbdddf:~# ls
+IMG_9328.jpg  Purchasing  bash.txt  romeo.txt  sales
+root@5aaa26cbdddf:~# du -h IMG_9328.jpg IMG_1234.jpg
+144K	IMG_9328.jpg
+du: cannot access 'IMG_1234.jpg': No such file or directory
+root@5aaa26cbdddf:~# du -h IMG_9328.jpg IMG_1234.jpg 2>&1
+144K	IMG_9328.jpg
+du: cannot access 'IMG_1234.jpg': No such file or directory
+root@5aaa26cbdddf:~# du -h IMG_9328.jpg IMG_1234.jpg > out.txt 2>&1
+root@5aaa26cbdddf:~# cat out.txt
+144K	IMG_9328.jpg
+du: cannot access 'IMG_1234.jpg': No such file or directory
+#+end_src
+
+** Can we redirect stderr to stdout?
+- What are the differences?
+  - ~[command] > out.txt 2>&1~
+    As a first steop, stdout is redirected to the file out.txt
+  - ~[command] 2>&1 > out.txt~
+    At first, stderr is redirecte to the same destination as current stdout
+** What about stdin?
+- Can we alse redirect a file into stdin?
+- Some program also accept user input
+- For example:
+  ~wc -l~
+#+begin_src bash
+root@5aaa26cbdddf:~# wc -l
+This is Bash!
+This is another line. #CTRL + D
+2
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat
+Hello from BASH!
+Hello from BASH!
+#+end_src
+
+- How can also use redirects!
+  - ~wc -l < out.txt~
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat out.txt
+144K	IMG_9328.jpg
+root@5aaa26cbdddf:~# wc -l < out.txt
+1
+root@5aaa26cbdddf:~# cat out.txt
+144K	IMG_9328.jpg
+root@5aaa26cbdddf:~# cat - < out.txt
+144K	IMG_9328.jpg
+root@5aaa26cbdddf:~# cat - < out.txt > another.txt
+root@5aaa26cbdddf:~# cat another.txt
+144K	IMG_9328.jpg
 #+end_src
