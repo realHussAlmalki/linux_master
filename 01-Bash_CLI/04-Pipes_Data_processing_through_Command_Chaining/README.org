@@ -1,16 +1,396 @@
-#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+TITLE: HA's Motivation: Pipes
 #+AUTHOR: HUSSAIN ALMALKI (HA)
 #+DESCRIPTION: DT's personal Emacs Linux Mastar.
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
 * TABLE OF CONTENTS :toc:
-- [[#bash-cli][Bash CLI]]
+- [[#motivation-pipes][Motivation: Pipes]]
+- [[#what-is-a-pipe][What is a pipe?]]
+- [[#commonly-used-tool][Commonly used tool]]
+  - [[#tee][tee]]
+  - [[#sort][sort]]
+  - [[#find-unique-lines][Find unique lines]]
+  - [[#filter-lines-grep][Filter lines: grep]]
+- [[#how-to-work-with-strings][How to work with strings]]
+- [[#the-program-cut][The program: cut]]
+- [[#the-tool-sed][The tool: sed]]
+- [[#analyze-a-logfile][Analyze a logfile]]
 
-* Bash CLI
-- In the next few chapters:
-  - We will have a look how to manage files through the command line
-  - We will see how we can redirect the output of programs into files / use files as input for programs.
-  - We will see how we can use pipes to combine tools.
-  - We will see how the Bash environment works and how this influences the way programs are executed.
-  - And we will configure your prompt to achieve a more beautiful terminal.
+* Motivation: Pipes
+- Let's start with a simple example...
+  - How to we count the number of tiles in a directory?
+- Right now, this would be quite inefficient
+  - (and the output.txt should even be in a different folder):
+  - ~ls > output.txt~
+  - ~wc -l output.txt~
+  - ~rm output.txt~
+
+#+begin_src bash
+root@5aaa26cbdddf:~# ls
+IMG_9328.jpg  Purchasing  another.txt  bash.txt  out.txt  romeo.txt  sales
+root@5aaa26cbdddf:~# ls > output.txt
+root@5aaa26cbdddf:~# cat output.txt
+IMG_9328.jpg
+Purchasing
+another.txt
+bash.txt
+out.txt
+output.txt
+romeo.txt
+sales
+root@5aaa26cbdddf:~# cat output.txt | wc -l
+8
+root@5aaa26cbdddf:~# rm output.txt
+#+end_src
+
+- Isn't there a more efficient way to achieve the same result?
+- Yes, there is! In this chapter, you will learn about Pipes in Bash.
+* What is a pipe?
+- The pipe is a mechanism that passes the output of one command as input to another command.
+- Thus, you can chain  multiple commands together and build more complex functionalities.
+- General syntax: ~command | command | ... | command~
+
+#+begin_src bash
+root@5aaa26cbdddf:~# ls
+IMG_9328.jpg  Purchasing  another.txt  bash.txt  out.txt  romeo.txt  sales
+root@5aaa26cbdddf:~# ls | wc -l
+7
+root@5aaa26cbdddf:~# ls | cat
+IMG_9328.jpg
+Purchasing
+another.txt
+bash.txt
+out.txt
+romeo.txt
+sales
+root@5aaa26cbdddf:~#
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# du -h bash.txt file-not-exist.txt
+4.0K	bash.txt
+du: cannot access 'file-not-exist.txt': No such file or directory
+root@5aaa26cbdddf:~# du -h bash.txt file-not-exist.txt 2>&1 > /dev/null
+du: cannot access 'file-not-exist.txt': No such file or directory
+root@5aaa26cbdddf:~# du -h bash.txt file-not-exist.txt 2>&1 > /dev/null | wc -l
+1
+root@5aaa26cbdddf:~#
+#+end_src
+
+* Commonly used tool
+** tee
+- With the combination of a pipe and the tee command you can create a standard output and write it to a file at the same time.
+  - ~echo 'Hello World!' | tee hello.txt~
+  - *To append*: ~echo 'Hello World!' | tee -a hello.txt~
+#+begin_src bash
+root@5aaa26cbdddf:~# echo 'Hello World!' | tee hello.txt
+Hello World!
+root@5aaa26cbdddf:~# cat hello.txt
+Hello World!
+root@5aaa26cbdddf:~# echo 'Hello World!' | tee -a hello.txt
+Hello World!
+root@5aaa26cbdddf:~# cat hello.txt
+Hello World!
+Hello World!
+root@5aaa26cbdddf:~# echo 'Hello World!' | tee -a hello.txt | wc -c
+13
+root@5aaa26cbdddf:~# ping google.com 2>&1 | tee ping.txt
+#+end_src
+
+** sort
+- *sort the contents in a file or stdin*
+  - By default: Alphabetical order
+  - sort -r: sort in reverse alphabetical order
+  - sort -n: sort numbers according to numerical order
+  - sort -c: check whether the contents in a file are sorted and find unsorted elements
+  - sort -k coumen_number (starting at 1): sort data by a specific column
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat users.txt
+Natalie Taylor
+Bradley Simpson
+Luce Houston
+Ella Woods
+Nicholas Davidson
+Natalie Murphy
+Matias King
+Ella Woods
+Bradley Simpson
+Ella Woods
+Luca Houston
+root@5aaa26cbdddf:~# sort users.txt
+Bradley Simpson
+Bradley Simpson
+Ella Woods
+Ella Woods
+Ella Woods
+Luca Houston
+Luce Houston
+Matias King
+Natalie Murphy
+Natalie Taylor
+Nicholas Davidson
+root@5aaa26cbdddf:~#
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat users.txt | sort -r
+Nicholas Davidson
+Natalie Taylor
+Natalie Murphy
+Matias King
+Luce Houston
+Luca Houston
+Ella Woods
+Ella Woods
+Ella Woods
+Bradley Simpson
+Bradley Simpson
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat users.txt | sort -k 2
+Nicholas Davidson
+Luca Houston
+Luce Houston
+Matias King
+Natalie Murphy
+Bradley Simpson
+Bradley Simpson
+Natalie Taylor
+Ella Woods
+Ella Woods
+Ella Woods
+#+end_src
+** Find unique lines
+- *Remove duplicate lines*
+  - ~sort users.txt | uniq~
+  - uniq only checks for consecutive(!) lines with the same content
+  - However, there's also a shorter way
+    - ~sort -u users.txt~
+  - Find the duplicate lines in a file:
+    - ~sort users.txt | uniq -d~
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat users.txt | sort -u
+Bradley Simpson
+Ella Woods
+Luca Houston
+Luce Houston
+Matias King
+Natalie Murphy
+Natalie Taylor
+Nicholas Davidson
+root@5aaa26cbdddf:~#
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat users.txt | sort | uniq
+Bradley Simpson
+Ella Woods
+Luca Houston
+Luce Houston
+Matias King
+Natalie Murphy
+Natalie Taylor
+Nicholas Davidson
+root@5aaa26cbdddf:~#
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat users.txt | sort | uniq -d
+Bradley Simpson
+Ella Woods
+#+end_src
+
+** Filter lines: grep
+- Grep is a tool that can find a pattern in an ouput or a file
+- *Basic usage*:
+  - ~grep -F 'pattern' file.txt~
+- However, it can also work on stdin:
+  - ~[command] | grep -F 'pattern'~
+- By default, grep uses *"basic regular expressions"*
+  - We haven't looked into regular expressions (regex) yet.
+  - so for now, we disable this feature of grep by passing the parameter: -F
+
+#+begin_src bash
+root@5aaa26cbdddf:~# ls
+file1.txt  file2.txt  file3.txt  hello.txt  ping.txt  users.txt
+root@5aaa26cbdddf:~# ls | grep -F 'file'
+file1.txt
+file2.txt
+file3.txt
+
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 72:c7:70:80:95:27 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+ root@5aaa26cbdddf:~# ip a | grep -F 'inet'
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+      valid_lft forever preferred_lft forever
+root@5aaa26cbdddf:~# ip a | grep -F 'inet' | grep -F '127.0.0.1'
+    inet 127.0.0.1/8 scope host lo
+#+end_src
+
+* How to work with strings
+- To replace (on a character level):
+  - using ~tr~ (translate)
+    - ~echo 'bash' | tr 'b' 'd'~
+    - Convert upper and lower case:
+      - ~echo 'awesome' | tr 'a-z' 'A-Z'~
+    - To delete characters:
+      - ~echo 'Bash is amazing' | tr -d ' '~
+#+begin_src bash
+root@5aaa26cbdddf:/# echo 'bash'  | tr 'b' 'd'
+dash
+root@5aaa26cbdddf:/#
+root@5aaa26cbdddf:/# cat /etc/passwd | tr 'root' 'toor'
+toor:x:0:0:toor:/toor:/bin/bash
+root@5aaa26cbdddf:/# echo 'awesome' | tr 'a-z' 'A-Z'
+AWESOME
+root@5aaa26cbdddf:/# echo 'awesome' | tr 'a-z' '.'
+.......
+root@5aaa26cbdddf:/# echo 'awesome' | tr 'a-z' '0-9'
+0949994
+root@5aaa26cbdddf:/# echo 'awesome' | tr 'a-z' '0-9.'
+0.4...4
+root@5aaa26cbdddf:/# echo 'Bash is amazing' | tr -d ' '
+Bashisamazing
+root@5aaa26cbdddf:/#
+#+end_src
+ - To reverse a string:
+   - using rev (reverse)
+     - ~echo 'Was it a cat I saw?' | rev~
+ #+begin_src bash
+root@5aaa26cbdddf:/# echo 'Was it a cat I saw?' | rev
+?was I tac a ti saW
+root@5aaa26cbdddf:/#
+ #+end_src
+* The program: cut
+- The program cut:
+  - It allows us to process and extract data from a file or standard input
+  - We can use it for different modes:
+    - Cutting by bytes:
+      - cut -b
+      - Example: ~uptime | cut -d 1-10~
+      - Here, we selet the bytes 1-10 from each line of the input
+#+begin_src bash
+~ ❯ uptime
+ 17:42:17 up 31 min,  1 user,  load average: 0.35, 0.40, 0.37
+~ ❯ uptime | cut -b 1-10
+ 17:42:19
+#+end_src
+
+- Cutting by caracters:
+  - cut -c
+  - It otherwise works exactly as we would cut by bytes
+#+begin_src bash
+~ ❯ uptime | cut -c 1-10
+ 17:44:57
+~ ❯ echo 'hoho' | cut -c 1-2
+ho
+~ ❯ echo 'hoho' | cut -c 2
+o
+~ ❯ echo 'hoho' | cut -c 2-
+oho
+#+end_src
+
+- Cutting by fields:
+  - ~cut -d ' ' -f 1~
+  - ~uptime | cut -d ' ' -f 1~
+  - And we selet the first item
+  - In case the output starts with a whitespace character... then you would need to use -f 2
+#+begin_src bash
+~ ❯ uptime
+ 17:51:46 up 41 min,  1 user,  load average: 0.39, 0.34, 0.35
+~ ❯ uptime | cut -d ' ' -f 1
+
+~ ❯ uptime | cut -d ' ' -f 2
+17:51:57
+~ ❯ uptime | cut -d ' ' -f 3
+up
+#+end_src
+
+* The tool: sed
+- The tool sed allows us to easily execute commands on a file or on stdin
+- For example:
+  - ~sed 'command1; command2; ...'~
+- Those commands can modify the string, such as:
+  - delete lines
+  - insert lines
+  - or... replace lines (the most common use case for sed):
+    - s/[pattern]/[replacement]/[flags]:
+      - Replaes a String with another
+      - the mose common flag is "g"
+        - This meands we want to replace all occurrences, not just the first
+#+begin_src bash
+root@5aaa26cbdddf:/# echo 'hello world!' | sed 's/world/bash/g'
+hello bash!
+root@5aaa26cbdddf:/#
+#+end_src
+
+* Analyze a logfile
+#+begin_src bash
+root@5aaa26cbdddf:~# cat access.log | head -n 5
+243.100.182.64 - - 11/Jul/2049:17:31:52 +0000 "GET /register.html HTTP/1.1" 200 1525 "https://www.invisible-ink-inc.com/spy-lab.html" "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36"
+169.59.71.202 - - 11/Jul/2049:17:32:00 +0000 "GET /addon/adblocker.zip HTTP/1.1" 200 3282 "https://www.energy-harvesting-technologies.com/solar-panels.html" "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0"
+219.122.50.122 - - 11/Jul/2049:17:32:02 +0000 "GET /downloads/music.mp3 HTTP/1.1" 200 4803 "https://www.golden-gardens.com/unicorn-parade.html" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+202.211.190.124 - - 11/Jul/2049:17:32:02 +0000 "GET /reports/backups.zip HTTP/1.1" 200 1940 "https://www.laser-tag-lounge.com/neon-nightclub.html" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0"
+54.223.253.86 - - 11/Jul/2049:17:32:03 +0000 "GET /documents/backups.zip HTTP/1.1" 200 5897 "https://www.nebula-navigators.com/star-gazing.html" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36"
+#+end_src
+
+#+begin_src bash
+root@5aaa26cbdddf:~# cat access.log | grep -F '.zip'
+root@5aaa26cbdddf:~# cat access.log | grep -F '.zip' | wc -l
+4061
+root@5aaa26cbdddf:~# cat access.log | grep -F '.zip' | cut -d ' ' -f 1
+root@5aaa26cbdddf:~# cat access.log | grep -F '.zip' | cut -d ' ' -f 7 | tail -n 5
+/archive/images.zip
+/reports/files.zip
+/files/downloads.zip
+/addon/adblocker.zip
+/archive/reports.zip
+root@5aaa26cbdddf:~# cat access.log | grep -F '.zip' | cut -d ' ' -f 7  | sort -u
+/addon/adblocker.zip
+/archive/backup.zip
+/archive/documents.zip
+/archive/images.zip
+/archive/reports.zip
+/archives/projects.zip
+/archives/releases.zip
+/documents/archive.zip
+/documents/backups.zip
+/documents/exports.zip
+/documents/reports.zip
+/downloads/files.zip
+/downloads/software.zip
+/files/archive.zip
+/files/backups.zip
+/files/data.zip
+/files/documents.zip
+/files/downloads.zip
+/files/exports.zip
+/files/images.zip
+/reports/archive.zip
+/reports/backups.zip
+/reports/data.zip
+/reports/documents.zip
+/reports/exports.zip
+/reports/files.zip
+/reports/images.zip
+root@5aaa26cbdddf:~# cat access.log | grep -F '.zip' | cut -d ' ' -f 7  | sort -u | wc -l
+27
+root@5aaa26cbdddf:~#
+#+end_src
