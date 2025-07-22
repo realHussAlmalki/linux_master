@@ -1,16 +1,60 @@
-#+TITLE: HA's GNU Emacs LINUX MASTAR
+#+TITLE: HA's GNU Emacs LINUX MASTER
 #+AUTHOR: HUSSAIN ALMALKI (HA)
-#+DESCRIPTION: DT's personal Emacs Linux Mastar.
+#+DESCRIPTION: DT's personal Emacs Linux Master.
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
 * TABLE OF CONTENTS :toc:
-- [[#bash-cli][Bash CLI]]
+- [[#the-shell-environment-introduction][The shell environment: Introduction]]
+- [[#what-is-a-shell][What is a shell?]]
+  - [[#what-is-a-shell-command-line][What is a shell (command line)]]
+- [[#environment-variables][Environment variables]]
 
-* Bash CLI
-- In the next few chapters:
-  - We will have a look how to manage files through the command line
-  - We will see how we can redirect the output of programs into files / use files as input for programs.
-  - We will see how we can use pipes to combine tools.
-  - We will see how the Bash environment works and how this influences the way programs are executed.
-  - And we will configure your prompt to achieve a more beautiful terminal.
+* The shell environment: Introduction
+
+The she environment is a collectioin of settings, variables, aliases, and configurations. It defines the context in which our programs are run. It thus influences how our programs are being run.
+In this chapter:
+- You will learn how th shell environment works.
+- You will understan environment variables, and how you can set, use and modify them.
+- You will learn how you can make persisten changes to your shell environment.
+
+* What is a shell?
+
+A shell:
+- Outer layer of the operating system.
+- it takes commands from the user and translates them into a form that the kernel can understand.
+- It can also display the result of those commands to the user
+- In general:
+  - Everything that allows the outer world to access the operating system.
+
+So, the graphical user interface is always a shell!
+
+** What is a shell (command line)
+Quite othen, the term "shell" only refers to the command line interface (CLI) of an operating system.
+CLI. Atext-based interface that allows users to interact with systems by typing commands.
+
+* Environment variables
+Used to store configuration information and settings, they influence the shell and program behavior.
+By convention: Environment variables written in uppercase letters. *We can list all of them with the following command* ~env~
+#+begin_src bash
+root@5aaa26cbdddf:/# env
+HOSTNAME=5aaa26cbdddf
+PWD=/
+HOME=/root
+TERM=xterm
+SHLVL=1
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+_=/usr/bin/env
+root@5aaa26cbdddf:/#
+#+end_src
+
+Example (to be preferred): ~echo "${PWD}"~, ~echo "${PATH}"~, ~echo "${USER}"~. *We can also use* ~echo "$PATH"~, ~echo $PATH~
+#+begin_src bash
+root@5aaa26cbdddf:~# echo "${PWD}"
+/root
+root@5aaa26cbdddf:~# echo "${PATH}"
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+root@5aaa26cbdddf:~# echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+root@5aaa26cbdddf:~#
+#+end_src
