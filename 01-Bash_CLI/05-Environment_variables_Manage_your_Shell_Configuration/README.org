@@ -9,6 +9,13 @@
 - [[#what-is-a-shell][What is a shell?]]
   - [[#what-is-a-shell-command-line][What is a shell (command line)]]
 - [[#environment-variables][Environment variables]]
+  - [[#home][HOME]]
+  - [[#pwd][PWD]]
+  - [[#user][USER]]
+- [[#how-to-set--unset-environment-variables][How to set / unset environment variables]]
+  - [[#how-do-we-set-an-environment-variable][How do we set an environment variable?]]
+  - [[#how-do-we-delete-an-environment-variable][How do we delete an environment variable?]]
+  - [[#path][PATH]]
 
 * The shell environment: Introduction
 
@@ -58,3 +65,100 @@ root@5aaa26cbdddf:~# echo $PATH
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 root@5aaa26cbdddf:~#
 #+end_src
+
+
+** HOME
+- Stores the current user's home directory path
+- Example: ~/home/username~
+** PWD
+- Stores the current working dirctory path
+- For the last working directory before: ~OLDPWD~
+- Not to be confused with the command ~pwd~
+#+begin_src bash
+root@5aaa26cbdddf:~# echo "${PWD} - ${OLDPWD}"
+/root - /var
+root@5aaa26cbdddf:~# cd $OLDPWD
+root@5aaa26cbdddf:/var# pwd
+/var
+#+end_src
+** USER
+- Stores the current user's suername
+- Example: ~username~
+   
+* How to set / unset environment variables
+** How do we set an environment variable?
+- wc can use the epxort command to create an envionment variavle:
+  - ~export VAR=value~
+- We can also overwrite an existing variable:
+  - ~VAR=new-value~
+
+#+begin_src bash
+root@5aaa26cbdddf:~# export CITY='Jeddah'
+root@5aaa26cbdddf:~# echo $CITY
+Jeddah
+root@5aaa26cbdddf:~# env
+HOSTNAME=5aaa26cbdddf
+PWD=/root
+CITY=Jeddah
+HOME=/root
+TERM=xterm
+SHLVL=1
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+OLDPWD=/var
+_=/usr/bin/env
+root@5aaa26cbdddf:~# echo "${CITY}"
+Jeddah
+root@5aaa26cbdddf:~# CITY='JEDDAH'
+root@5aaa26cbdddf:~# echo "${CITY}"
+JEDDAH
+root@5aaa26cbdddf:~#
+#+end_src
+
+** How do we delete an environment variable?
+- ~unset VAR~
+- This is useful for troubleshooting and cleaning up of the environment
+#+begin_src bash
+root@5aaa26cbdddf:~# env
+HOSTNAME=5aaa26cbdddf
+PWD=/root
+CITY=JEDDAH
+HOME=/root
+TERM=xterm
+SHLVL=1
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+OLDPWD=/var
+_=/usr/bin/env
+root@5aaa26cbdddf:~# unset CITY
+root@5aaa26cbdddf:~# env
+HOSTNAME=5aaa26cbdddf
+PWD=/root
+HOME=/root
+TERM=xterm
+SHLVL=1
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+OLDPWD=/var
+_=/usr/bin/env
+root@5aaa26cbdddf:~#
+#+end_src  
+
+** PATH
+The environment variable PATH is one of the most important variables in our shell.
+- Stores a list of directories
+- Directories searched for executable programs
+- Order matters: direcories searched from left to right
+- Multiple direcotries separated by colons ~(":")~
+
+#+begin_src bash
+root@5aaa26cbdddf:~# echo "${PATH}"
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+root@5aaa26cbdddf:~# which cat
+/usr/bin/cat
+root@5aaa26cbdddf:~# /usr/bin/cat users.txt
+Natalie Taylor
+Bradley Simpson
+root@5aaa26cbdddf:~# /usr/lcal/sbin/cat users.txt
+bash: /usr/lcal/sbin/cat: No such file or directory
+root@5aaa26cbdddf:~#
+#+end_src
+
+ 
