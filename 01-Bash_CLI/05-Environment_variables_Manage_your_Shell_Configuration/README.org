@@ -16,6 +16,9 @@
   - [[#how-do-we-set-an-environment-variable][How do we set an environment variable?]]
   - [[#how-do-we-delete-an-environment-variable][How do we delete an environment variable?]]
   - [[#path][PATH]]
+- [[#modifying-the-path-variable][Modifying the PATH variable]]
+  - [[#path-best-practies][PATH: Best practies]]
+  - [[#our-own-program][Our own program]]
 
 * The shell environment: Introduction
 
@@ -162,3 +165,69 @@ root@5aaa26cbdddf:~#
 #+end_src
 
  
+
+* Modifying the PATH variable
+Sometimes, we want to modify the PATH variable. For exmaple, we have a separtate directory in which we want to install executable files on our system.
+- For example: /opt/homebrew/bin
+- Usually, we want to append a directory to our PATH:
+  - ~PATH="${PATH}:/new/path"~
+#+begin_src bash
+root@5aaa26cbdddf:~# mkdir bin
+root@5aaa26cbdddf:~# cd bin/
+root@5aaa26cbdddf:~/bin# pwd
+/root/bin
+root@5aaa26cbdddf:~/bin# ls
+root@5aaa26cbdddf:~/bin# PATH="${PATH}:/root/bin"
+root@5aaa26cbdddf:~/bin# echo "${PATH}"
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/bin
+root@5aaa26cbdddf:~/bin# touch custom_program
+root@5aaa26cbdddf:~/bin# chmod +x custom_program
+root@5aaa26cbdddf:~/bin# ls -l
+total 0
+-rwxr-xr-x 1 root root 0 Jul 25 16:44 custom_program
+root@5aaa26cbdddf:~/bin# custom_program
+root@5aaa26cbdddf:~/bin# cd ../
+root@5aaa26cbdddf:~# custom_program
+root@5aaa26cbdddf:~#
+#+end_src
+
+- Common issues: "command not found"
+  - In that case, we need to verify the contents of the variable PATH:
+  - echo "${PATH}"
+  - the desired directory should be included
+  - The order of the entries in PATH must be coorect
+  - If we need to find a program:
+    - ~which program~
+
+#+begin_src bash
+root@5aaa26cbdddf:~# which custom_program
+/root/bin/custom_program
+root@5aaa26cbdddf:~# which cat
+/usr/bin/cat
+#+end_src
+
+** PATH: Best practies
+- Keep system directories at the beginning
+- Place user-specific direcorires after system direcories
+- Avoid unnecessary duplication of directories
+- Minimize the number of direcories to improve search efficiency
+- Reqularly review and clean up the PATH
+- Be cautius when modifying the PATH for system-wide changes
+** Our own program
+#+begin_src bash
+root@5aaa26cbdddf:~# cd bin
+root@5aaa26cbdddf:~/bin# touch hello_world
+root@5aaa26cbdddf:~/bin# chmod +x hello_world
+root@5aaa26cbdddf:~/bin# vim hello_world
+bash: vim: command not found
+root@5aaa26cbdddf:~/bin# nano hello_world
+root@5aaa26cbdddf:~/bin# cat hello_world
+#!/usr/bin/env python3
+print("Hello, World!")
+root@5aaa26cbdddf:~/bin#
+root@5aaa26cbdddf:~/bin# cd ~/
+root@5aaa26cbdddf:~# pwd
+/root
+root@5aaa26cbdddf:~# hello_world
+Hello, World!
+#+end_src
